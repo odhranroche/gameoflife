@@ -7,8 +7,10 @@
 -- Includes functions for initialising the gird, getting and setting elements, 
 -- randomising the grid, getting the size of the grid, getting 4 or 8 neighbours
 -- and iterators for looping through elements or coordinates
+
 twod = {}
 math.randomseed(os.time())
+
 -- create new 2D array
 -- takes an optional filler, default is 0
 function twod.new(size, fill)
@@ -102,119 +104,6 @@ function twod.getNeighbours(grid, cell, numAxis)
 	return neighbours
 end
 
-local function reset(grid, cell, direction)
-	local size = #grid
-	local newCell = direction(cell)
-	-- special cases for diagonals
-	if newCell[1] < cell[1] and newCell[2] > cell[2] then -- NE
-		-- newCell[2] = 1
-		-- newCell = east(north(cell))
-		newCell = north(cell)
-		for i = 1, 2 do
-			if newCell[i] < cell[i] then
-				newCell[i] = size
-			elseif newCell[i] > cell[i] then
-				newCell[i] = 1
-			end
-		end
-		newCell = east(newCell)
-		for i = 1, 2 do
-			if newCell[i] < cell[i] then
-				newCell[i] = size
-			elseif newCell[i] > cell[i] then
-				newCell[i] = 1
-			end
-		end
-	elseif newCell[1] > cell[1] and newCell[2] < cell[2] then -- SW
-		-- newCell[1] = 1
-		newCell = south(cell)
-		for i = 1, 2 do
-			if newCell[i] < cell[i] then
-				newCell[i] = size
-			elseif newCell[i] > cell[i] then
-				newCell[i] = 1
-			end
-		end
-		newCell = west(newCell)
-		for i = 1, 2 do
-			if newCell[i] < cell[i] then
-				newCell[i] = size
-			elseif newCell[i] > cell[i] then
-				newCell[i] = 1
-			end
-		end
-	elseif newCell[1] < cell[1] and newCell[2] < cell[2] then -- NW
-		-- newCell[2] = size
-		newCell = north(cell)
-		for i = 1, 2 do
-			if newCell[i] < cell[i] then
-				newCell[i] = size
-			elseif newCell[i] > cell[i] then
-				newCell[i] = 1
-			end
-		end
-		newCell = west(newCell)
-		for i = 1, 2 do
-			if newCell[i] < cell[i] then
-				newCell[i] = size
-			elseif newCell[i] > cell[i] then
-				newCell[i] = 1
-			end
-		end
-	elseif newCell[1] > cell[1] and newCell[2] > cell[2] then -- SE
-		-- newCell[2] = 1
-		newCell = south(cell)
-		for i = 1, 2 do
-			if newCell[i] < cell[i] then
-				newCell[i] = size
-			elseif newCell[i] > cell[i] then
-				newCell[i] = 1
-			end
-		end
-		newCell = east(newCell)
-		for i = 1, 2 do
-			if newCell[i] < cell[i] then
-				newCell[i] = size
-			elseif newCell[i] > cell[i] then
-				newCell[i] = 1
-			end
-		end
-		
-		
-	-- elseif newCell[1] < cell[1] and newCell[2] == cell[2] then -- n
-		-- newCell[1] = size
-	-- elseif newCell[1] > cell[1] and newCell[2] == cell[2] then -- s
-		-- newCell[1] = 1
-	-- elseif newCell[1] == cell[1] and newCell[2] < cell[2] then -- w
-		-- newCell[2] = size
-	-- elseif newCell[1] == cell[1] and newCell[2] > cell[2] then -- e
-		-- newCell[2] = 1
-	else
-		for i = 1, 2 do
-			if newCell[i] < cell[i] then
-				newCell[i] = size
-			elseif newCell[i] > cell[i] then
-				newCell[i] = 1
-			end
-		end
-	end
-	
-	return newCell
-end
-
-function twod.getWrapNeighbours(grid, cell, numAxis)
-	assert((numAxis == 4 or numAxis == 8), "Incorrect number of neighbours.")
-	local neighbours = {}
-	for i = 1, numAxis do
-		local dir = directions[i](cell) -- coords of neighbour
-		if not twod.get(grid, dir) then
-			dir = reset(grid, cell, directions[i])
-		end
-		neighbours[dir] = twod.get(grid, dir) -- set to the neighbour element at coords
-	end
-	return neighbours
-end
-
 -- iterate through elements in 2D array
 -- use in a loop e.g for e in twod.iterateElements(g) do print(e) end
 function twod.iterateElements(grid)
@@ -245,17 +134,4 @@ function twod.iterateCoords(grid)
 			end
 end
 
--- local g = twod.new(3)
--- local count = 1
--- for k,v in ipairs(g) do
-	-- for m,n in ipairs(v) do
-		-- g[k][m] = count
-		-- count = count + 1
-	-- end
--- end
--- twod.randomize(g, {0,1,2,3,4,5,6,7,8,9})
--- print(g)
--- for k,v in pairs(twod.getWrapNeighbours(g,{3,2},8)) do
-	-- print(k[1],k[2],v)
--- end
 return twod

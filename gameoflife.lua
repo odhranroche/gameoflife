@@ -38,7 +38,7 @@ function tick(grid)
 			if neighbours == 3 then
 				table.insert(update, 1) -- go from dead to alive, or keep living if already alive
 			else
-				table.insert(update, 0)--twod.get(grid, cell)) -- stay in same state
+				table.insert(update, 0) -- twod.get(grid, cell)) -- stay in same state
 			end
 		elseif neighbours > 3 then
 			table.insert(update, -1) -- die from over population
